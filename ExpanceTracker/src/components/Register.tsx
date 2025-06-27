@@ -16,7 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const { width, height } = Dimensions.get('window');
 
-const SignupPage = ({ visible, onClose, onNavigateToLogin }) => {
+const Register = ({ visible, onClose, onNavigateToLogin }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -533,4 +533,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupPage;
+export default Register;

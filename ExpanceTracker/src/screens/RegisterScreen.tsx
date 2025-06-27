@@ -10,6 +10,9 @@ import {
   StatusBar,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import SignupPage from '../components/Register';
+import Login from '../components/Login';
+import Register from '../components/Register';
 const { width, height } = Dimensions.get('window');
 
 type ModalType = 'login' | 'signup' | null;
@@ -41,10 +44,7 @@ const RegisterScreen: React.FC = () => {
         style={styles.backgroundImage}
         resizeMode="cover"
       >
-        <LinearGradient
-          colors={['rgba(0,122,255,0.8)', 'rgba(0,122,255,0.6)', 'rgba(0,0,0,0.4)']}
-          style={styles.gradient}
-        >
+
           <View style={styles.content}>
             {/* Header */}
             <View style={styles.header}>
@@ -92,15 +92,6 @@ const RegisterScreen: React.FC = () => {
                 onPress={openSignup}
                 activeOpacity={0.8}
               >
-                <LinearGradient
-                  colors={['#007AFF', '#0056CC']}
-                  style={styles.buttonGradient}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                >
-                  <Text style={styles.primaryButtonText}>Get Started</Text>
-                  <Ionicons name="arrow-forward" size={20} color="white" style={styles.buttonIcon} />
-                </LinearGradient>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -122,17 +113,17 @@ const RegisterScreen: React.FC = () => {
               </Text>
             </View>
           </View>
-        </LinearGradient>
+        
       </ImageBackground>
 
       {/* Modals */}
-      <LoginPage
+      <Login
         visible={activeModal === 'login'}
         onClose={closeModal}
         onNavigateToSignup={navigateToSignup}
       />
 
-      <SignupPage
+      <Register
         visible={activeModal === 'signup'}
         onClose={closeModal}
         onNavigateToLogin={navigateToLogin}
@@ -264,7 +255,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(10px)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
   },

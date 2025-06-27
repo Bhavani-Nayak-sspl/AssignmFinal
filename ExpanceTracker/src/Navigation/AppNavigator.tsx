@@ -13,105 +13,78 @@ import ProfileScreen from '../screens/ProfileScreen';
 // Import types
 import {
   RootTabsParamList,
-  AuthStackParamList,
-  AppStackParamList,
+  // AuthStackParamList,
+  // AppStackParamList,
 } from '../types/navigation';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Ionicons from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import History from '../screens/History';
 
 // Create navigators
 const Tab = createBottomTabNavigator<RootTabsParamList>();
-const AuthStack = createNativeStackNavigator<AuthStackParamList>();
-const AppStack = createNativeStackNavigator<AppStackParamList>();
+// const AuthStack = createNativeStackNavigator<AuthStackParamList>();
+// const AppStack = createNativeStackNavigator<AppStackParamList>();
 
 // Auth Stack Navigator (for authentication flow)
-const AuthNavigator: React.FC = () => {
-  return (
-    <AuthStack.Navigator
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: true,
-        cardStyleInterpolator: ({ current, layouts }) => {
-          return {
-            cardStyle: {
-              transform: [
-                {
-                  translateX: current.progress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [layouts.screen.width, 0],
-                  }),
-                },
-              ],
-            },
-          };
-        },
-      }}
-    >
-      <AuthStack.Screen name="Landing" component={LandingScreen} />
-      <AuthStack.Screen name="Register" component={RegisterScreen} />
-    </AuthStack.Navigator>
-  );
-};
+// const AuthNavigator: React.FC = () => {
+//   return (
+//     <AuthStack.Navigator
+//       screenOptions={{
+//         headerShown: false,
+//         gestureEnabled: true,
+//       }}
+//     >
+//       <AuthStack.Screen name="Landing" component={LandingScreen} />
+//       <AuthStack.Screen name="Register" component={RegisterScreen} />
+//     </AuthStack.Navigator>
+//   );
+// };
 
 // Bottom Tabs Navigator
-const MainTabsNavigator: React.FC = () => {
+const AppNavigator: React.FC = () => {
   return (
-    <Tab.Navigator
-      // screenOptions={({ route }) => ({
-      //   header(props) {
-      //     this.headerShown : false
-      //   },
-      //   tabBarIcon: ({ focused, color, size }) => {
-          // let iconName: keyof typeof Ionicons.getRawGlyphMap;
 
-          // switch (route.name) {
-          //   case 'Home':
-          //     iconName = focused ? 'home' : 'home-outline';
-          //     break;
-          //   case 'Search':
-          //     iconName = focused ? 'search' : 'search-outline';
-          //     break;
-          //   case 'Notifications':
-          //     iconName = focused ? 'notifications' : 'notifications-outline';
-          //     break;
-          //   case 'Profile':
-          //     iconName = focused ? 'person' : 'person-outline';
-          //     break;
-          //   case 'Settings':
-          //     iconName = focused ? 'settings' : 'settings-outline';
-          //     break;
-          //   default:
-          //     iconName = 'home-outline';
-          // }
-
-          // return <Ionicons name={iconName} size={size} color={color} />;
-        // },
-        // tabBarActiveTintColor: '#007AFF',
-      //   tabBarInactiveTintColor: '#8E8E93',
-      //   tabBarStyle: {
-      //     backgroundColor: '#FFFFFF',
-      //     borderTopWidth: 1,
-      //     borderTopColor: '#E5E5EA',
-      //     paddingBottom: 5,
-      //     paddingTop: 5,
-      //     height: 60,
-      //   },
-      //   tabBarLabelStyle: {
-      //     fontSize: 12,
-      //     fontWeight: '500',
-      //   },
-      //   headerShown: false,
-      // })}
+    <NavigationContainer>
+    <Tab.Navigator initialRouteName='Home'
+  screenOptions={({ route }) => ({
+    tabBarActiveTintColor: '#FF6611',
+    tabBarInactiveTintColor: '#BBB',
+    animation : 'shift',
+    headerShown: false,
+    tabBarIcon: ({ color, size }) => {
+     const icons: Record<keyof RootTabsParamList, string> = {
+        Home: 'home',
+         History : 'money-check',
+        Profile: 'user',
+      };
+      return (
+        <Icon
+          name={icons[route.name]}
+          color={color}
+          size={size}
+        />
+      );
+      
+      
+    },
+  })}
     >
       <Tab.Screen
         name="Home"
         component={HomePage}
+        
         options={{
           tabBarLabel: 'Home',
+          
         }}
       />
-     
-     
+      <Tab.Screen
+        name="History"
+        component={History}
+        options={{
+          tabBarLabel: 'History',
+        }}
+      />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
@@ -121,57 +94,53 @@ const MainTabsNavigator: React.FC = () => {
       />
      
     </Tab.Navigator>
+    </NavigationContainer>
   );
 };
 
 // Main App Navigator
-const AppNavigator: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+// const AppNavigator: React.FC = () => {
+//   const [isAuthenticated, setIsAuthenticated] = useState(true);
+//   const [isLoading, setIsLoading] = useState(true);
 
-  // Check authentication status
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        // Simulate checking auth status (replace with your auth logic)
-        // const token = await AsyncStorage.getItem('authToken');
-        // setIsAuthenticated(!!token);
+//   // Check authentication status
+//   useEffect(() => {
+//     const checkAuthStatus = async () => {
+//       try {
+//         setIsAuthenticated(false);
+//       } catch (error) {
+//         console.error('Error checking auth status:', error);
+//         setIsAuthenticated(false);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
 
-        // For demo purposes, show auth flow first
-        setIsAuthenticated(false);
-      } catch (error) {
-        console.error('Error checking auth status:', error);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+//     checkAuthStatus();
+//   }, []);
 
-    checkAuthStatus();
-  }, []);
+ 
+//   if (isLoading) {
+//     return null;
+//   }
 
-  // You can add a loading screen here if needed
-  if (isLoading) {
-    return null; // or a loading component
-  }
-
-  return (
-    <NavigationContainer>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      <AppStack.Navigator
-        screenOptions={{
-          headerShown: false,
-          gestureEnabled: true,
-        }}
-      >
-        {isAuthenticated ? (
-          <AppStack.Screen name="MainTabs" component={MainTabsNavigator} />
-        ) : (
-          <AppStack.Screen name="Auth" component={AuthNavigator} />
-        )}
-      </AppStack.Navigator>
-    </NavigationContainer>
-  );
-};
+//   return (
+//     <NavigationContainer>
+//       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+//       <AppStack.Navigator
+//         screenOptions={{
+//           headerShown: false,
+//           gestureEnabled: true,
+//         }}
+//       >
+//         {isAuthenticated ? (
+//           <AppStack.Screen name="MainTabs" component={MainTabsNavigator} />
+//         ) : (
+//           <AppStack.Screen name="Auth" component={AuthNavigator} />
+//         )}
+//       </AppStack.Navigator>
+//     </NavigationContainer>
+//   );
+// };
 
 export default AppNavigator;
