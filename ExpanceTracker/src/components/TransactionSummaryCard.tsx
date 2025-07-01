@@ -40,8 +40,10 @@ const TransactionSummaryCard = ({ transaction }: Props) => {
         return { name: 'car-outline', color: '#2196F3' };
       case 'shopping':
         return { name: 'cart-outline', color: '#E91E63' };
+      case 'bills':
+        return { name: 'newspaper-outline', color: '#88F' };
       default:
-        return { name: 'wallet-outline', color: '#9C27B0' };
+        return { name: 'wallet-outline', color: '#F44' };
     }
   };
 
