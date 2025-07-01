@@ -47,40 +47,6 @@ const TransactionSummaryCard = ({ transaction }: Props) => {
     }
   };
 
-    const filterLastSevenDaysTransactions = (
-      transactions: Transaction[],
-    ): Transaction[] => {
-      const now = new Date();
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(now.getDate() - 7);
-  
-      // First sort all transactions by newest first
-      const sortedTransactions = [...transactions].sort((a, b) => {
-        // Try createdAt first (for newly added transactions)
-        if (a.createdAt && b.createdAt) {
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        }
-        
-        // Fallback to date
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        
-        // If dates are equal, use ID or index as tiebreaker
-        if (dateA.getTime() === dateB.getTime()) {
-          // Assuming newer transactions have higher IDs or were added later
-          return b.id.localeCompare(a.id);
-        }
-        
-        return dateB.getTime() - dateA.getTime();
-      });
-  
-      // Then filter for last 7 days
-      return sortedTransactions.filter(transaction => {
-        const transactionDate = new Date(transaction.date);
-        return transactionDate >= sevenDaysAgo && transactionDate <= now;
-      });
-    };
-
   return (
     <View style={styles.container}>
 

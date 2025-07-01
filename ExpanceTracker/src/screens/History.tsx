@@ -375,7 +375,8 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
+  
   },
   actionModalView: {
     backgroundColor: isDark ? '#1E1E1E' : '#FFF',
@@ -399,6 +400,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    
   },
   modalTitle: {
     fontSize: 20,

@@ -10,6 +10,7 @@ import TransactionSummaryCard from '../components/TransactionSummaryCard';
 import { Transaction } from '../types/navigation';
 import { FlatList } from 'react-native';
 import Header from '../components/Header';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HomePage = () => {
   const { theme } = useTheme();
@@ -121,14 +122,14 @@ const HomePage = () => {
         />
       </View>
         ) : (
-          <View style={{ flex: 1 }}>
-       <Text style={{
-    color: isDark ? '#FFF' : '#000',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 20,
-  }}>No Transaction</Text>
-      </View>
+          <View style={styles.emptyContainer}>
+                   <Ionicons
+                     name="wallet-outline"
+                     size={32}
+                     color={isDark ? '#555' : '#999'}
+                   />
+                   <Text style={styles.emptyText}>No transactions yet</Text>
+                 </View>
         )
       }
 
@@ -226,5 +227,14 @@ const getStyles = (isDark: boolean) =>
       shadowRadius: 4,
       elevation: 5,
       borderRadius: 20,
+    },
+     emptyContainer: {
+      alignItems: 'center',
+      paddingVertical: 16,
+    },
+    emptyText: {
+      fontSize: 14,
+      color: isDark ? '#AAA' : '#888',
+      marginTop: 8,
     },
   });
