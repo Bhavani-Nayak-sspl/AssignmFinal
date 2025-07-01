@@ -1,10 +1,4 @@
-import {
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Toast } from 'toastify-react-native';
@@ -14,26 +8,17 @@ import { useTheme } from '../components/ThemeProvider';
 import { fetchTransactions } from '../redux/slices/transactionSlice';
 import { RootState, useAppDispatch, useAppSelector } from '../redux/store';
 import TransactionSummaryCard from '../components/TransactionSummaryCard';
-
-interface Transaction {
-  id: string;
-  type: string;
-  category: string;
-  amount: number | string; // Allow string for JSON-parsed data
-  description: string;
-  date: string;
-  createdAt: string;
-}
+import { Transaction } from '../types/navigation';
+import { FlatList } from 'react-native';
 
 const HomePage = () => {
   const { theme } = useTheme();
-  const isDark = theme === 'dark'; // Removed toggleTheme if unused
+  const isDark = theme === 'dark';
   const styles = getStyles(isDark);
-  const [totalBalance, setTotalBalance] = useState<number>(0); // Default to 0
-  const [totalExpense, setTotalExpense] = useState<number>(0); // Default to 0, fixed typo
-  const [remainingBalance, setRemainingBalance] = useState<number>(0); // Default to 0, fixed naming
+  const [totalBalance, setTotalBalance] = useState<number>(0);
+  const [totalExpense, setTotalExpense] = useState<number>(0);
+  const [remainingBalance, setRemainingBalance] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
- 
 
   const dispatch = useAppDispatch();
   const { transactions, loading, error } = useAppSelector(
@@ -51,18 +36,18 @@ const HomePage = () => {
 
   const calculateTotalIncome = (transactions: Transaction[]): number => {
     return transactions
-      .filter((transaction) => transaction.type === 'income')
+      .filter(transaction => transaction.type === 'income')
       .reduce((total, transaction) => {
-        const amount = Number(transaction.amount); // Convert to number
+        const amount = Number(transaction.amount);
         return isNaN(amount) ? total : total + amount;
       }, 0);
   };
 
   const calculateTotalExpense = (transactions: Transaction[]): number => {
     return transactions
-      .filter((transaction) => transaction.type === 'expense')
+      .filter(transaction => transaction.type === 'expense')
       .reduce((total, transaction) => {
-        const amount = Number(transaction.amount); // Convert to number
+        const amount = Number(transaction.amount);
         return isNaN(amount) ? total : total + amount;
       }, 0);
   };
@@ -72,23 +57,70 @@ const HomePage = () => {
     const expense = calculateTotalExpense(transactions);
     setTotalBalance(income);
     setTotalExpense(expense);
-    setRemainingBalance(income - expense); // Calculate remaining balance
+    setRemainingBalance(income - expense);
   };
+
+  const filterLastSevenDaysTransactions = (
+    transactions: Transaction[],
+  ): Transaction[] => {
+    const now = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(now.getDate() - 7);
+
+    // First sort all transactions by newest first
+    const sortedTransactions = [...transactions].sort((a, b) => {
+      // Try createdAt first (for newly added transactions)
+      if (a.createdAt && b.createdAt) {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+      
+      // Fallback to date                              
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      
+      // If dates are equal, use ID or index as tiebreaker
+      if (dateA.getTime() === dateB.getTime()) {
+        // Assuming newer transactions have higher IDs or were added later
+        return b.id.localeCompare(a.id);
+      }
+      
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    // Then filter for last 7 days
+    return sortedTransactions.filter(transaction => {
+      const transactionDate = new Date(transaction.date);
+      return transactionDate >= sevenDaysAgo && transactionDate <= now;
+    });
+  };
+
+  const last7DaysTransactions = filterLastSevenDaysTransactions(transactions);
 
   return (
     <View style={styles.container}>
       <BalanceCard
         totalBalance={totalBalance}
         totalExpense={totalExpense}
-        totalRemainings={remainingBalance} // Fixed naming
+        totalRemainings={remainingBalance} 
       />
       <View style={styles.seperator}>
-        <Text style={styles.text}>Recent Transactions</Text> {/* Fixed typo */}
+        <Text style={styles.text}>Recent Transactions</Text> 
+      </View>
+<View style={{ flex: 1 }}>
+        <FlatList
+          data={last7DaysTransactions}
+          keyExtractor={(item, index) => item.id || index.toString()}
+          renderItem={({ item }) => (
+            <TransactionSummaryCard transaction={[item]} />
+          )}
+          contentContainerStyle={{paddingBottom: 80}}
+         
+        />
       </View>
       <TouchableOpacity
         style={styles.openModal}
         onPress={() => {
-          Toast.success('Opening form'); // Simplified Toast
+          Toast.success('Opening form'); 
           setIsModalVisible(true);
         }}
       >
@@ -99,7 +131,7 @@ const HomePage = () => {
         animationType="slide"
         transparent={true}
         visible={isModalVisible}
-        onRequestClose={() => setIsModalVisible(false)} // Re-enabled for better UX
+        onRequestClose={() => setIsModalVisible(false)} 
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -120,7 +152,6 @@ const HomePage = () => {
           </View>
         </View>
       </Modal>
-      <TransactionSummaryCard/>
     </View>
   );
 };
@@ -139,15 +170,16 @@ const getStyles = (isDark: boolean) =>
       color: isDark ? '#FFF' : '#000',
       fontSize: 16,
     },
-    seperator: { // Fixed typo in variable name
+    seperator: {
+      // Fixed typo in variable name
       width: '100%',
       borderBottomWidth: 1,
       borderBottomColor: isDark ? '#444' : '#AAA',
       marginVertical: 10,
     },
     openModal: {
-      height: 80,
-      width: 80,
+      height: 60,
+      width: 60,
       backgroundColor: isDark ? '#FF9800' : '#FFA726',
       position: 'absolute',
       right: 10,

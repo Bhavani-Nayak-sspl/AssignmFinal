@@ -22,23 +22,7 @@ import History from '../screens/History';
 
 // Create navigators
 const Tab = createBottomTabNavigator<RootTabsParamList>();
-// const AuthStack = createNativeStackNavigator<AuthStackParamList>();
-// const AppStack = createNativeStackNavigator<AppStackParamList>();
 
-// Auth Stack Navigator (for authentication flow)
-// const AuthNavigator: React.FC = () => {
-//   return (
-//     <AuthStack.Navigator
-//       screenOptions={{
-//         headerShown: false,
-//         gestureEnabled: true,
-//       }}
-//     >
-//       <AuthStack.Screen name="Landing" component={LandingScreen} />
-//       <AuthStack.Screen name="Register" component={RegisterScreen} />
-//     </AuthStack.Navigator>
-//   );
-// };
 
 // Bottom Tabs Navigator
 const AppNavigator: React.FC = () => {
@@ -98,49 +82,5 @@ const AppNavigator: React.FC = () => {
   );
 };
 
-// Main App Navigator
-// const AppNavigator: React.FC = () => {
-//   const [isAuthenticated, setIsAuthenticated] = useState(true);
-//   const [isLoading, setIsLoading] = useState(true);
-
-//   // Check authentication status
-//   useEffect(() => {
-//     const checkAuthStatus = async () => {
-//       try {
-//         setIsAuthenticated(false);
-//       } catch (error) {
-//         console.error('Error checking auth status:', error);
-//         setIsAuthenticated(false);
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
-
-//     checkAuthStatus();
-//   }, []);
-
- 
-//   if (isLoading) {
-//     return null;
-//   }
-
-//   return (
-//     <NavigationContainer>
-//       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-//       <AppStack.Navigator
-//         screenOptions={{
-//           headerShown: false,
-//           gestureEnabled: true,
-//         }}
-//       >
-//         {isAuthenticated ? (
-//           <AppStack.Screen name="MainTabs" component={MainTabsNavigator} />
-//         ) : (
-//           <AppStack.Screen name="Auth" component={AuthNavigator} />
-//         )}
-//       </AppStack.Navigator>
-//     </NavigationContainer>
-//   );
-// };
 
 export default AppNavigator;

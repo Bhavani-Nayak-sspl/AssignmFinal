@@ -42,3 +42,4 @@ export interface Transaction {
   date: string;
   createdAt: string;
 }
+

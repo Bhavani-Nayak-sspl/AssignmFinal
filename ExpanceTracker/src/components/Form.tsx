@@ -1,18 +1,21 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Toast } from 'toastify-react-native';
 import { useAppDispatch } from '../redux/store';
-import { addTransaction } from '../redux/slices/transactionSlice';
+import { addTransaction, updateTransaction, fetchTransactions } from '../redux/slices/transactionSlice';
+import { Transaction } from '../types/navigation';
 
 const transactionTypes = [
   { label: 'Expense', value: 'expense' },
   { label: 'Income', value: 'income' },
 ];
+
 type FormProps = {
   closeModal: () => void;
+  transactionToEdit?: Transaction;
 };
 
 const categories = {
@@ -33,62 +36,80 @@ const categories = {
   ]
 };
 
-const Form = ({closeModal} : FormProps) => {
-  const [type, setType] = useState(null);
-  const [category, setCategory] = useState(null);
+const Form = ({ closeModal, transactionToEdit }: FormProps) => {
+  const [type, setType] = useState<string | null>(null);
+  const [category, setCategory] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-    const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
+  // Initialize form with transaction data if in edit mode
+  useEffect(() => {
+    if (transactionToEdit) {
+      setType(transactionToEdit.type);
+      setCategory(transactionToEdit.category);
+      setAmount(transactionToEdit.amount.toString());
+      setDescription(transactionToEdit.description || '');
+      setDate(new Date(transactionToEdit.date));
+    }
+  }, [transactionToEdit]);
 
-   const handleSubmit = async () => {
-  // Validation
-  if (!type) {
-    Toast.error('Please select a transaction type');
-    return;
-  }
-
-  if (!category) {
-    Toast.error('Please select a category');
-    return;
-  }
-
-  const amountValue = parseFloat(amount);
-  if (isNaN(amountValue) || amountValue <= 0) {
-    Toast.error('Please enter a valid amount');
-    return;
-  }
-
-const transaction = {
-    type,
-    category,
-    amount: amountValue,
-    description,
-    date: date.toISOString().split('T')[0],
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
   };
 
-console.log(transaction,'in handle submit')
-console.log(date.toISOString().split('T')[0],'DAte in handle submit')
-   try {
-    await dispatch(addTransaction(transaction)).unwrap();
-    
-    // Reset form
-    setType(null);
-    setCategory(null);
-    setAmount('');
-    setDescription('');
-    setDate(new Date());
-    closeModal()
-  } catch (error : any) {
-    Toast.error(error.message || 'Failed to save transaction');
-  }
-};
+  const handleSubmit = async () => {
+    // Validation
+    if (!type) {
+      Toast.error('Please select a transaction type');
+      return;
+    }
+
+    if (!category) {
+      Toast.error('Please select a category');
+      return;
+    }
+
+    const amountValue = parseFloat(amount);
+    if (isNaN(amountValue) || amountValue <= 0) {
+      Toast.error('Please enter a valid amount');
+      return;
+    }
+
+    const transactionData = {
+      type,
+      category,
+      amount: amountValue,
+      description,
+      date: date.toISOString().split('T')[0],
+      ...(transactionToEdit ? { id: transactionToEdit.id } : {}),
+    };
+
+     try {
+      if (transactionToEdit) {
+        await dispatch(updateTransaction(transactionData as Transaction)).unwrap();
+        Toast.success('Transaction updated successfully');
+      } else {
+        await dispatch(addTransaction(transactionData as Transaction)).unwrap();
+        Toast.success('Transaction added successfully');
+      }
+      await dispatch(fetchTransactions());
+      closeModal();
+    } catch (error: any) {
+      Toast.error(error.message || `Failed to ${transactionToEdit ? 'update' : 'add'} transaction`);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Add Transaction</Text>
+      <Text style={styles.header}>
+        {transactionToEdit ? 'Edit Transaction' : 'Add Transaction'}
+      </Text>
 
       {/* Transaction Type Dropdown */}
       <View style={styles.inputContainer}>
@@ -107,7 +128,7 @@ console.log(date.toISOString().split('T')[0],'DAte in handle submit')
             setCategory(null);
           }}
           renderLeftIcon={() => (
-            <Icon name="swap-vert" size={20} color="#6c63ff" style={styles.icon} />
+            <Icon name="swap-vert" size={20} color="#FF6611" style={styles.icon} />
           )}
           containerStyle={styles.dropdownContainer}
           itemTextStyle={styles.dropdownItemText}
@@ -123,14 +144,14 @@ console.log(date.toISOString().split('T')[0],'DAte in handle submit')
             style={styles.dropdown}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
-            data={categories[type]}
+            data={categories[type as keyof typeof categories]}
             labelField="label"
             valueField="value"
             placeholder="Select Category"
             value={category}
             onChange={item => setCategory(item.value)}
             renderLeftIcon={() => (
-              <Icon name="category" size={20} color="#6c63ff" style={styles.icon} />
+              <Icon name="category" size={20} color="#FF6611" style={styles.icon} />
             )}
             containerStyle={styles.dropdownContainer}
             itemTextStyle={styles.dropdownItemText}
@@ -143,7 +164,7 @@ console.log(date.toISOString().split('T')[0],'DAte in handle submit')
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Amount</Text>
         <View style={styles.amountContainer}>
-          <Icon name="attach-money" size={24} color="#6c63ff" style={styles.currencyIcon} />
+          <Icon name="currency-rupee" size={24} color="#FF6611" style={styles.currencyIcon} />
           <TextInput
             style={styles.amountInput}
             keyboardType="numeric"
@@ -159,7 +180,7 @@ console.log(date.toISOString().split('T')[0],'DAte in handle submit')
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Description</Text>
         <View style={styles.descriptionContainer}>
-          <Icon name="description" size={20} color="#6c63ff" style={styles.icon} />
+          <Icon name="description" size={20} color="#FF6611" style={styles.icon} />
           <TextInput
             style={styles.descriptionInput}
             placeholder="Optional description"
@@ -179,7 +200,7 @@ console.log(date.toISOString().split('T')[0],'DAte in handle submit')
           style={styles.dateContainer}
           onPress={() => setShowDatePicker(true)}
         >
-          <Icon name="event" size={20} color="#6c63ff" style={styles.icon} />
+          <Icon name="event" size={20} color="#FF6611" style={styles.icon} />
           <Text style={styles.dateText}>
             {date.toLocaleDateString()}
           </Text>
@@ -189,8 +210,8 @@ console.log(date.toISOString().split('T')[0],'DAte in handle submit')
             value={date}
             mode="date"
             display="default"
-            // onChange={onDateChange}
-            accentColor="#6c63ff"
+            onChange={onDateChange}
+            accentColor="#FF6611"
           />
         )}
       </View>
@@ -204,7 +225,9 @@ console.log(date.toISOString().split('T')[0],'DAte in handle submit')
         onPress={handleSubmit}
         disabled={!type || !category || !amount}
       >
-        <Text style={styles.submitButtonText}>Add Transaction</Text>
+        <Text style={styles.submitButtonText}>
+          {transactionToEdit ? 'Update Transaction' : 'Add Transaction'}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -305,10 +328,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 12,
     paddingHorizontal: 16,
-    paddingVertical : 5,
+    paddingVertical: 5,
     borderWidth: 1,
     borderColor: '#e0e0e0',
-    // minHeight: 100,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -343,7 +365,7 @@ const styles = StyleSheet.create({
     color: '#2c3e50',
   },
   submitButton: {
-    backgroundColor: '#6c63ff',
+    backgroundColor: '#FF6611',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

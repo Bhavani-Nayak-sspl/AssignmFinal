@@ -51,6 +51,7 @@ function App() {
       <ThemeProvider >
       <StatusBar hidden />
     <AppNavigator/>
+      </ThemeProvider>
     <ToastManager
     config={toastConfig}
         theme={theme}
@@ -59,7 +60,6 @@ function App() {
         showProgressBar={showProgressBar}
         showCloseIcon={showCloseIcon}
         animationStyle='fade'/>
-      </ThemeProvider>
       </Provider>
     </>
   );
