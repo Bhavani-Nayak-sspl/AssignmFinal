@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from './ThemeProvider';
 import { RootState, useAppDispatch, useAppSelector } from '../redux/store';
-import { BarChart, EdgePosition, PieChart } from 'react-native-gifted-charts';
+import { BarChart, PieChart } from 'react-native-gifted-charts';
 import * as Progress from 'react-native-progress';
 
 interface BalanceCardProps {

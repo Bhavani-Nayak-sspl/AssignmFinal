@@ -106,6 +106,8 @@ const HomePage = () => {
       <View style={styles.seperator}>
         <Text style={styles.text}>Recent Transactions</Text> 
       </View>
+      {
+        transactions.length > 0 ?(
 <View style={{ flex: 1 }}>
         <FlatList
           data={last7DaysTransactions}
@@ -117,6 +119,18 @@ const HomePage = () => {
          
         />
       </View>
+        ) : (
+          <View style={{ flex: 1 }}>
+       <Text style={{
+    color: isDark ? '#FFF' : '#000',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 20,
+  }}>No Transaction</Text>
+      </View>
+        )
+      }
+
       <TouchableOpacity
         style={styles.openModal}
         onPress={() => {
