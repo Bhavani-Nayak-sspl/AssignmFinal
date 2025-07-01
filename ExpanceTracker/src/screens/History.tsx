@@ -5,7 +5,6 @@ import { fetchTransactions, deleteTransaction } from '../redux/slices/transactio
 import { Transaction } from '../types/navigation';
 import TransactionSummaryCard from '../components/TransactionSummaryCard';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Toast } from 'toastify-react-native';
 import { useTheme } from '../components/ThemeProvider';
 import Form from '../components/Form';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -160,7 +159,7 @@ const groupTransactionsByMonth = (transactions: Transaction[]): SectionData[] =>
   const handleEditPress = () => {
     setIsActionModalVisible(false);
     setIsEditModalVisible(true);
-    Toast.success('Opening edit form');
+
   };
 
   const handleDelete = () => {
@@ -178,9 +177,7 @@ const groupTransactionsByMonth = (transactions: Transaction[]): SectionData[] =>
           onPress: async () => {
             try {
               await dispatch(deleteTransaction(selectedTransaction.id)).unwrap();
-              Toast.success('Transaction deleted successfully');
             } catch (e) {
-              Toast.error('Failed to delete transaction');
               console.error('Delete error:', e);
             }
           },

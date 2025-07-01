@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Toast } from 'toastify-react-native';
 import { useAppDispatch } from '../redux/store';
 import { addTransaction, updateTransaction, fetchTransactions } from '../redux/slices/transactionSlice';
 import { Transaction } from '../types/navigation';
@@ -66,18 +65,18 @@ const Form = ({ closeModal, transactionToEdit }: FormProps) => {
   const handleSubmit = async () => {
     // Validation
     if (!type) {
-      Toast.error('Please select a transaction type');
+     
       return;
     }
 
     if (!category) {
-      Toast.error('Please select a category');
+      
       return;
     }
 
     const amountValue = parseFloat(amount);
     if (isNaN(amountValue) || amountValue <= 0) {
-      Toast.error('Please enter a valid amount');
+     
       return;
     }
 
@@ -93,15 +92,15 @@ const Form = ({ closeModal, transactionToEdit }: FormProps) => {
      try {
       if (transactionToEdit) {
         await dispatch(updateTransaction(transactionData as Transaction)).unwrap();
-        Toast.success('Transaction updated successfully');
+       
       } else {
         await dispatch(addTransaction(transactionData as Transaction)).unwrap();
-        Toast.success('Transaction added successfully');
+       
       }
       await dispatch(fetchTransactions());
       closeModal();
     } catch (error: any) {
-      Toast.error(error.message || `Failed to ${transactionToEdit ? 'update' : 'add'} transaction`);
+     
     }
   };
 

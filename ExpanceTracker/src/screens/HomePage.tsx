@@ -1,7 +1,6 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Toast } from 'toastify-react-native';
 import BalanceCard from '../components/BalanceCard';
 import Form from '../components/Form';
 import { useTheme } from '../components/ThemeProvider';
@@ -10,6 +9,7 @@ import { RootState, useAppDispatch, useAppSelector } from '../redux/store';
 import TransactionSummaryCard from '../components/TransactionSummaryCard';
 import { Transaction } from '../types/navigation';
 import { FlatList } from 'react-native';
+import Header from '../components/Header';
 
 const HomePage = () => {
   const { theme } = useTheme();
@@ -98,6 +98,7 @@ const HomePage = () => {
 
   return (
     <View style={styles.container}>
+      <Header/>
       <BalanceCard
         totalBalance={totalBalance}
         totalExpense={totalExpense}
@@ -134,7 +135,6 @@ const HomePage = () => {
       <TouchableOpacity
         style={styles.openModal}
         onPress={() => {
-          Toast.success('Opening form'); 
           setIsModalVisible(true);
         }}
       >
@@ -153,7 +153,6 @@ const HomePage = () => {
             <TouchableOpacity
               style={styles.closeModal}
               onPress={() => {
-                Toast.success('Form closed');
                 setIsModalVisible(false);
               }}
             >
