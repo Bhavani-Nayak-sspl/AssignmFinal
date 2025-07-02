@@ -123,6 +123,7 @@ const groupTransactionsByMonth = (transactions: Transaction[]): SectionData[] =>
       const date = new Date(transaction.date);
       if (isNaN(date.getTime())) throw new Error('Invalid date');
       const monthYear = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+      
       if (!grouped[monthYear]) grouped[monthYear] = [];
       grouped[monthYear].push(transaction);
     } catch (e) {
@@ -165,7 +166,6 @@ const groupTransactionsByMonth = (transactions: Transaction[]): SectionData[] =>
   const handleDelete = () => {
     if (!selectedTransaction) return;
     setIsActionModalVisible(false);
-    
     Alert.alert(
       'Delete Transaction',
       'Are you sure you want to delete this transaction?',

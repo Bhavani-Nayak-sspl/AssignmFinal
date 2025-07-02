@@ -16,7 +16,6 @@ const BalanceCard = (props: BalanceCardProps) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const styles = getStyles(isDark);
-  const dispatch = useAppDispatch();
   const { transactions, loading, error } = useAppSelector(
     (state: RootState) => state.transactions,
   );

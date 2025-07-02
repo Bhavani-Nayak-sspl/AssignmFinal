@@ -14,6 +14,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HomePage = () => {
   const { theme } = useTheme();
+
   const isDark = theme === 'dark';
   const styles = getStyles(isDark);
   const [totalBalance, setTotalBalance] = useState<number>(0);
@@ -62,8 +63,7 @@ const HomePage = () => {
   };
 
   const filterLastSevenDaysTransactions = (
-    transactions: Transaction[],
-  ): Transaction[] => {
+    transactions: Transaction[],)  => {
     const now = new Date();
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(now.getDate() - 7);

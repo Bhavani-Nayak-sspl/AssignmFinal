@@ -5,15 +5,10 @@ import { RootState, useAppDispatch, useAppSelector } from '../redux/store';
 import Icon from 'react-native-vector-icons/Ionicons';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
+import { Transaction } from '../types/navigation';
 
 // Define transaction type (adjust this based on your actual transaction structure)
-interface Transaction {
-  id: string | number;
-  amount: number;
-  description: string;
-  date: string;
-  category?: string;
-  type?: 'income' | 'expense';
+interface TypeTransaction extends Transaction {
   [key: string]: any; // Allow for additional properties
 }
 
@@ -30,24 +25,24 @@ const ProfileScreen = () => {
   const accentColor = theme === 'dark' ? '#F82' : '#F61';
 
   // Function to convert transactions to CSV format
-  const convertToCSV = (data: Transaction[]): string => {
+  const convertToCSV = (data: TypeTransaction[]): string => {
     if (!data || data.length === 0) {
       return 'No data available';
     }
     
     // Get all unique keys from all transactions to create headers
     const allKeys = new Set<string>();
-    data.forEach((transaction: Transaction) => {
+    data.forEach((transaction: TypeTransaction) => {
       Object.keys(transaction).forEach((key: string) => allKeys.add(key));
     });
 
     const headers = Array.from(allKeys);
-    
+
     // Create CSV header row
     const csvHeaders = headers.join(',');
     
     // Create CSV data rows
-    const csvRows = data.map((transaction: Transaction) => {
+    const csvRows = data.map((transaction: TypeTransaction) => {
       return headers.map((header: string) => {
         const value = transaction[header];
         // Handle values that might contain commas, quotes, or newlines

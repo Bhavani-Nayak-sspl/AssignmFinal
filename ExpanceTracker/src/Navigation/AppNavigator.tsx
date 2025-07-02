@@ -5,9 +5,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Import screens
-import LandingScreen from '../screens/LandingScreen';
 import HomePage from '../screens/HomePage';
-import RegisterScreen from '../screens/RegisterScreen';
+
 import ProfileScreen from '../screens/ProfileScreen';
 
 // Import types
@@ -16,7 +15,7 @@ import {
   // AuthStackParamList,
   // AppStackParamList,
 } from '../types/navigation';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import History from '../screens/History';
 
@@ -33,7 +32,7 @@ const AppNavigator: React.FC = () => {
   screenOptions={({ route }) => ({
     tabBarActiveTintColor: '#FF6611',
     tabBarInactiveTintColor: '#BBB',
-    animation : 'shift',
+      animation : 'shift',
     headerShown: false,
     tabBarIcon: ({ color, size }) => {
      const icons: Record<keyof RootTabsParamList, string> = {
@@ -48,8 +47,7 @@ const AppNavigator: React.FC = () => {
           size={size}
         />
       );
-      
-      
+ 
     },
   })}
     >
@@ -59,7 +57,7 @@ const AppNavigator: React.FC = () => {
         
         options={{
           tabBarLabel: 'Home',
-          
+
         }}
       />
       <Tab.Screen
